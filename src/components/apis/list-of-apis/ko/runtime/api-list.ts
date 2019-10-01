@@ -162,7 +162,7 @@ export class ApiList {
         this.hasNextPage(!!pageOfTagResources.nextLink);
 
 
-        switch (query.grouping) {
+        switch (query.grouping || "none") {
             case "none":
                 const pageOfApis = await this.apiService.getApis(query);
                 const apis = pageOfApis ? pageOfApis.value : [];

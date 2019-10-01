@@ -35,9 +35,11 @@ export class ApiService {
         let query = `/apis?expandApiVersionSet=true&$top=${take}&$skip=${skip}`;
 
         if (searchRequest) {
-            searchRequest.tags.forEach((tag, index) => {
-                query = Utils.addQueryParameter(query, `tags[${index}]=${tag}`);
-            });
+            if (searchRequest.tags) {
+                searchRequest.tags.forEach((tag, index) => {
+                    query = Utils.addQueryParameter(query, `tags[${index}]=${tag}`);
+                });
+            }
 
             if (searchRequest.pattern) {
                 const pattern = Utils.escapeValueForODataFilter(searchRequest.pattern);
