@@ -1,5 +1,5 @@
-
 import * as ko from "knockout";
+import * as Constants from "../../../../../constants";
 import template from "./api-list.html";
 import { Component, RuntimeComponent, Param, OnMounted } from "@paperbits/common/ko/decorators";
 import { Utils } from "../../../../../utils";
@@ -7,7 +7,6 @@ import { ApiService } from "../../../../../services/apiService";
 import { DefaultRouter, Route } from "@paperbits/common/routing";
 import { Api } from "../../../../../models/api";
 import { TagGroup } from "../../../../../models/tagGroup";
-import * as Constants from "../../../../../constants";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 
 
@@ -18,9 +17,7 @@ import { SearchQuery } from "../../../../../contracts/searchQuery";
     injectable: "apiList"
 })
 export class ApiList {
-    private searchRequest: SearchQuery;
     private queryParams: URLSearchParams;
-
     public readonly apis: ko.ObservableArray<Api>;
     public readonly apiGroups: ko.ObservableArray<TagGroup<Api>>;
     public readonly working: ko.Observable<boolean>;
@@ -79,7 +76,7 @@ export class ApiList {
             }
         }
 
-        this.queryParams = this.queryParams || new URLSearchParams();
+        this.queryParams = this.queryParams || new URLSearchParams(); // Params should be take from Route params
 
         if (this.apis().length > 0) {
             return;
@@ -154,8 +151,7 @@ export class ApiList {
             take: Constants.defaultPageSize
         };
 
-        this.searchRequest = this.searchRequest || this.searchRequest || { pattern: "", tags: [], grouping: "none" };
-
+        
         const pageOfTagResources = await this.apiService.getApisByTags(query);
         const apiGroups = pageOfTagResources.value;
 
@@ -166,16 +162,16 @@ export class ApiList {
         this.hasNextPage(!!pageOfTagResources.nextLink);
 
 
-        switch (this.searchRequest.grouping) {
+        switch (query.grouping) {
             case "none":
-                const pageOfApis = await this.apiService.getApis(this.searchRequest);
+                const pageOfApis = await this.apiService.getApis(query);
                 const apis = pageOfApis ? pageOfApis.value : [];
                 this.apis(this.groupApis(apis));
 
                 break;
 
             case "tag":
-                const pageOfTagResources = await this.apiService.getApisByTags(this.searchRequest);
+                const pageOfTagResources = await this.apiService.getApisByTags(query);
                 const tagResources = pageOfTagResources ? pageOfTagResources.value : [];
                 // TODO: this.tagResourcesToNodes(tagResources);
 
