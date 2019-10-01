@@ -6,8 +6,14 @@ import { Utils } from "../utils";
  * API model.
  */
 export class Api {
+    /**
+     * Unique ARM identifier.
+     */
     public readonly id: string;
 
+    /**
+     * Unique API identifier.
+     */
     public readonly name: string;
 
     /**

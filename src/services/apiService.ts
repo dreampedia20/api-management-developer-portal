@@ -1,8 +1,10 @@
+import * as Constants from "../constants";
+import { TagContract } from "./../contracts/tag";
 import { ProductContract } from "./../contracts/product";
 import { ApiContract } from "../contracts/api";
-import { TagResourceContract } from "../contracts/tagResource";
+import { ApiTagResourceContract } from "../contracts/tagResource";
 import { PageContract } from "../contracts/page";
-import { ApiSearchQuery } from "../contracts/apiSearchQuery";
+import { SearchQuery } from "../contracts/searchQuery";
 import { Api } from "../models/api";
 import { VersionSet } from "../models/versionSet";
 import { Page } from "../models/page";
@@ -15,17 +17,26 @@ import { OperationContract } from "../contracts/operation";
 import { SchemaContract } from "../contracts/schema";
 import { VersionSetContract } from "../contracts/apiVersionSet";
 import { HttpHeader } from "@paperbits/common/http/httpHeader";
+import { TagGroup } from "../models/tagGroup";
+import { Bag } from "@paperbits/common";
 
 
 export class ApiService {
     constructor(private readonly mapiClient: MapiClient) { }
 
-    public async getApis(searchRequest?: ApiSearchQuery): Promise<Page<Api>> {
-        let query = "/apis?expandApiVersionSet=true";
+    /**
+     * Returns APIs matching search request (if specified).
+     * @param searchRequest 
+     */
+    public async getApis(searchRequest?: SearchQuery): Promise<Page<Api>> {
+        const skip = searchRequest && searchRequest.skip || 0;
+        const take = searchRequest && searchRequest.take || Constants.defaultPageSize;
+
+        let query = `/apis?expandApiVersionSet=true&$top=${take}&$skip=${skip}`;
 
         if (searchRequest) {
             searchRequest.tags.forEach((tag, index) => {
-                query = Utils.addQueryParameter(query, `tags[${index}]=${tag.name}`);
+                query = Utils.addQueryParameter(query, `tags[${index}]=${tag}`);
             });
 
             if (searchRequest.pattern) {
@@ -36,18 +47,16 @@ export class ApiService {
 
         const result = await this.mapiClient.get<Page<ApiContract>>(query);
 
-        // return {
-        //     value: result.value.map(x => new Api(x)),
-        //     count: result.count,
-        //     nextPage: result.nextPage
-        // };
-
         const page = new Page<Api>();
         page.value = result.value.map(x => new Api(x));
 
         return page;
     }
 
+    /**
+     * Returns APIs in specified version set.
+     * @param versionSetId Unique version set identifier.
+     */
     public async getVersionSetApis(versionSetId: string): Promise<Api[]> {
         if (!versionSetId) {
             return null;
@@ -61,10 +70,59 @@ export class ApiService {
         return result;
     }
 
-    public async getApisByTags(searchRequest?: ApiSearchQuery): Promise<PageContract<TagResourceContract[]>> {
-        throw new Error("Not implemented.");
+    /**
+     * Returns pairs of Tag and API matching search request (if specified).
+     * @param searchRequest Search request definition.
+     */
+    public async getApisByTags(searchRequest?: SearchQuery): Promise<Page<TagGroup<Api>>> {
+        const skip = searchRequest && searchRequest.skip || 0;
+        const take = searchRequest && searchRequest.take || Constants.defaultPageSize;
+
+        let query = `/apisByTags?expandApiVersionSet=true&$top=${take}&$skip=${skip}`;
+
+        if (searchRequest) {
+            if (searchRequest.tags) {
+                searchRequest.tags.forEach((tag, index) => {
+                    query = Utils.addQueryParameter(query, `tags[${index}]=${tag}`);
+                });
+            }
+
+            if (searchRequest.pattern) {
+                const pattern = Utils.escapeValueForODataFilter(searchRequest.pattern);
+                query = Utils.addQueryParameter(query, `$filter=contains(properties/name,'${encodeURIComponent(pattern)}')`);
+            }
+        }
+
+        const pageOfApiTagResources = await this.mapiClient.get<PageContract<ApiTagResourceContract>>(query);
+
+        const page = new Page<TagGroup<Api>>();
+        const tagGroups: Bag<TagGroup<Api>> = {};
+
+        pageOfApiTagResources.value.forEach(x => {
+            const tagContract: TagContract = x.tag ? Utils.armifyContract(x.tag) : null;
+            const apiContract: ApiContract = x.api ? Utils.armifyContract(x.api) : null;
+
+            let tagGroup = tagGroups[tagContract.properties.displayName];
+
+            if (!tagGroup) {
+                tagGroup = new TagGroup<Api>();
+                tagGroup.tag = tagContract.properties.displayName;
+                tagGroups[tagContract.properties.displayName] = tagGroup;
+            }
+            tagGroup.items.push(new Api(apiContract));
+        });
+
+        page.value = Object.keys(tagGroups).map(x => tagGroups[x]);
+        page.nextLink = pageOfApiTagResources.nextLink;
+
+        return page;
     }
 
+    /**
+     * Returns API with specified ID and revision.
+     * @param apiId Unique API indentifier.
+     * @param revision 
+     */
     public async getApi(apiId: string, revision?: string): Promise<Api> {
         let apiResourceUri = apiId;
 
@@ -102,13 +160,13 @@ export class ApiService {
             case "wsdl":
                 header.value = "application/wsdl+xml";
                 break;
-            case "swagger": //json 2.0
+            case "swagger": // json 2.0
                 header.value = "application/vnd.swagger.doc+json";
                 break;
-            case "openapi": //yaml 3.0
+            case "openapi": // yaml 3.0
                 header.value = "application/vnd.oai.openapi";
                 break;
-            case "openapi+json": //json 3.0
+            case "openapi+json": // json 3.0
                 header.value = "application/vnd.oai.openapi+json";
                 break;
             default:
@@ -134,14 +192,14 @@ export class ApiService {
         return operation;
     }
 
-    public async getOperations(apiId: string, searchQuery?: ApiSearchQuery): Promise<Page<Operation>> {
+    public async getOperations(apiId: string, searchQuery?: SearchQuery): Promise<Page<Operation>> {
         let query = `${apiId}/operations`;
 
         let top;
 
         if (searchQuery) {
             searchQuery.tags.forEach((tag, index) => {
-                query = Utils.addQueryParameter(query, `tags[${index}]=${tag.name}`);
+                query = Utils.addQueryParameter(query, `tags[${index}]=${tag}`);
             });
 
             if (searchQuery.pattern) {
@@ -149,7 +207,7 @@ export class ApiService {
                 query = Utils.addQueryParameter(query, `$filter=contains(properties/name,'${encodeURIComponent(pattern)}')`);
             }
 
-            top = searchQuery.top;
+            top = searchQuery.take;
 
             if (searchQuery.skip) {
                 query = Utils.addQueryParameter(query, `$skip=${searchQuery.skip}`);
@@ -185,10 +243,10 @@ export class ApiService {
         if (cached) {
             return cached;
         }
-        
+
         const schema = await this.mapiClient.get<SchemaContract>(`${schemaId}`);
         const loaded = new Schema(schema);
-        
+
         cachedApi[schemaId] = loaded;
 
         return loaded;

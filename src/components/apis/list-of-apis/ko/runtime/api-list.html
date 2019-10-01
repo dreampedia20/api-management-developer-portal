@@ -5,13 +5,57 @@
 </p> -->
 
 
-<!-- ko if: working-->
+<!-- ko if: working -->
 <spinner class="fit"></spinner>
 <!-- /ko -->
 
-<!-- ko ifnot: working-->
+<!-- ko ifnot: working -->
 <!-- ko if: apis -->
+
+
+<div>
+    <h1>list</h1>
+    <!-- ko foreach: { data: $component.apiGroups, as: 'group' } -->
+    <label data-bind="text: group.tag"></label>
+    <div>
+        <!-- ko foreach: { data: group.items, as: 'item' } -->
+        <a href="#" data-bind="text: item.displayName"></a>
+        <!-- /ko -->
+    </div>
+    <hr />
+    <!-- /ko -->
+
+
+    <!-- ko if: hasPager -->
+    <ul class="pagination justify-content-center">
+        <!-- ko if: hasPrevPage -->
+        <li class="page-item">
+            <a href="#" class="page-link" role="button" aria-label="Previous page"
+                data-bind="click: prevPage, enable: hasPrevPage">
+                <i class="icon icon-chevron-left"></i>
+            </a>
+        </li>
+        <!-- /ko -->
+        <li class="page-item">
+            <span class="page-link" data-bind="text: page"></span>
+        </li>
+        <!-- ko if: hasNextPage -->
+        <li class="page-item">
+            <a href="#" class="page-link" role="button" aria-label="Next page"
+                data-bind="click: nextPage, enable: hasNextPage">
+                <i class="icon icon-chevron-right"></i>
+            </a>
+        </li>
+        <!-- /ko -->
+    </ul>
+    <!-- /ko -->
+</div>
+
+
+
+
 <!-- ko if: !itemStyleView() || itemStyleView() === 'list'-->
+
 <ul class="nav list-group">
     <!-- ko foreach: { data: apis, as: 'item' } -->
     <li class="list-group-item" role="listitem">

@@ -1,12 +1,14 @@
+
 import * as ko from "knockout";
 import template from "./api-list.html";
-import { ApiSearchQuery } from "../../../../../contracts/apiSearchQuery";
 import { Component, RuntimeComponent, Param, OnMounted } from "@paperbits/common/ko/decorators";
 import { Utils } from "../../../../../utils";
-import { TagService } from "../../../../../services/tagService";
 import { ApiService } from "../../../../../services/apiService";
 import { DefaultRouter, Route } from "@paperbits/common/routing";
 import { Api } from "../../../../../models/api";
+import { TagGroup } from "../../../../../models/tagGroup";
+import * as Constants from "../../../../../constants";
+import { SearchQuery } from "../../../../../contracts/searchQuery";
 
 
 @RuntimeComponent({ selector: "api-list" })
@@ -16,17 +18,24 @@ import { Api } from "../../../../../models/api";
     injectable: "apiList"
 })
 export class ApiList {
-    private searchRequest: ApiSearchQuery;
+    private searchRequest: SearchQuery;
     private queryParams: URLSearchParams;
 
     public apis: ko.ObservableArray<Api>;
+    public apiGroups: ko.ObservableArray<TagGroup<Api>>;
+
     public working: ko.Observable<boolean>;
     public selectedId: ko.Observable<string>;
     public dropDownId: ko.Observable<string>;
 
+    public readonly pattern: ko.Observable<string>;
+    public readonly page: ko.Observable<number>;
+    public readonly hasPager: ko.Computed<boolean>;
+    public readonly hasPrevPage: ko.Observable<boolean>;
+    public readonly hasNextPage: ko.Observable<boolean>;
+
     constructor(
         private readonly apiService: ApiService,
-        private readonly tagService: TagService,
         private readonly router: DefaultRouter
     ) {
         this.apis = ko.observableArray([]);
@@ -34,10 +43,16 @@ export class ApiList {
         this.working = ko.observable();
         this.selectedId = ko.observable();
         this.dropDownId = ko.observable();
-        this.loadApis = this.loadApis.bind(this);
         this.applySelectedApi = this.applySelectedApi.bind(this);
         this.selectFirst = this.selectFirst.bind(this);
         this.selectionChanged = this.selectionChanged.bind(this);
+
+        this.pattern = ko.observable();
+        this.page = ko.observable();
+        this.hasPrevPage = ko.observable();
+        this.hasNextPage = ko.observable();
+        this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
+        this.apiGroups = ko.observableArray();
     }
 
     @Param()
@@ -87,7 +102,7 @@ export class ApiList {
         if (this.itemStyleView() === "dropdown" && this.dropDownId() !== selectedId) {
             this.dropDownId(selectedId);
         }
-        
+
         this.queryParams.set("apiId", selectedId);
         this.router.navigateTo("#?" + this.queryParams.toString());
     }
@@ -119,21 +134,50 @@ export class ApiList {
         }
     }
 
-    public async searchApis(searchRequest?: ApiSearchQuery): Promise<void> {
+
+    public prevPage(): void {
+        this.page(this.page() - 1);
+        this.searchApis(/*  */);
+    }
+
+    public nextPage(): void {
+        this.page(this.page() + 1);
+        this.searchApis();
+    }
+
+    public async searchApis(): Promise<void> {
         this.working(true);
 
-        this.searchRequest = searchRequest || this.searchRequest || { pattern: "", tags: [], grouping: "none" };
+        const pageNumber = this.page() - 1;
+
+        const query: SearchQuery = {
+            pattern: this.pattern(),
+            skip: pageNumber * Constants.defaultPageSize,
+            take: Constants.defaultPageSize
+        };
+
+        this.searchRequest = this.searchRequest || this.searchRequest || { pattern: "", tags: [], grouping: "none" };
+
+        const pageOfTagResources = await this.apiService.getApisByTags(query);
+        const apiGroups = pageOfTagResources.value;
+
+        this.apiGroups(apiGroups);
+
+
+        this.hasPrevPage(pageNumber > 0);
+        this.hasNextPage(!!pageOfTagResources.nextLink);
+
 
         switch (this.searchRequest.grouping) {
             case "none":
-                const pageOfApis = await this.apiService.getApis(searchRequest);
+                const pageOfApis = await this.apiService.getApis(this.searchRequest);
                 const apis = pageOfApis ? pageOfApis.value : [];
                 this.apis(this.groupApis(apis));
 
                 break;
 
             case "tag":
-                const pageOfTagResources = await this.apiService.getApisByTags(searchRequest);
+                const pageOfTagResources = await this.apiService.getApisByTags(this.searchRequest);
                 const tagResources = pageOfTagResources ? pageOfTagResources.value : [];
                 // TODO: this.tagResourcesToNodes(tagResources);
 

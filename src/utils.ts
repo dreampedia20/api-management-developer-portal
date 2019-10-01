@@ -292,4 +292,19 @@ export class Utils {
 
         return resourceUrl;
     }
+
+    public static armifyContract(contract: any): any {
+        const armifiedContract = {};
+        const segments = contract.id.split("/");
+
+        armifiedContract["id"] = contract.id;
+        armifiedContract["name"] = segments[segments.length - 1];
+        contract.displayName = contract.name;
+        armifiedContract["properties"] = contract;
+
+        delete contract.id;
+        delete contract.name;
+
+        return armifiedContract;
+    }
 }
