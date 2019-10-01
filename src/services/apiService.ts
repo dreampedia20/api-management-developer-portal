@@ -71,7 +71,7 @@ export class ApiService {
     }
 
     /**
-     * Returns pairs of Tag and API matching search request (if specified).
+     * Returns Tag/API pairs matching search request (if specified).
      * @param searchRequest Search request definition.
      */
     public async getApisByTags(searchRequest?: SearchQuery): Promise<Page<TagGroup<Api>>> {

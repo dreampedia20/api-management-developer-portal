@@ -21,13 +21,11 @@ export class ApiList {
     private searchRequest: SearchQuery;
     private queryParams: URLSearchParams;
 
-    public apis: ko.ObservableArray<Api>;
-    public apiGroups: ko.ObservableArray<TagGroup<Api>>;
-
-    public working: ko.Observable<boolean>;
-    public selectedId: ko.Observable<string>;
-    public dropDownId: ko.Observable<string>;
-
+    public readonly apis: ko.ObservableArray<Api>;
+    public readonly apiGroups: ko.ObservableArray<TagGroup<Api>>;
+    public readonly working: ko.Observable<boolean>;
+    public readonly selectedId: ko.Observable<string>;
+    public readonly dropDownId: ko.Observable<string>;
     public readonly pattern: ko.Observable<string>;
     public readonly page: ko.Observable<number>;
     public readonly hasPager: ko.Computed<boolean>;
@@ -48,7 +46,7 @@ export class ApiList {
         this.selectionChanged = this.selectionChanged.bind(this);
 
         this.pattern = ko.observable();
-        this.page = ko.observable();
+        this.page = ko.observable(1);
         this.hasPrevPage = ko.observable();
         this.hasNextPage = ko.observable();
         this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
