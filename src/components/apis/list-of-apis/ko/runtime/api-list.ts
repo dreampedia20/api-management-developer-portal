@@ -41,7 +41,6 @@ export class ApiList {
         this.applySelectedApi = this.applySelectedApi.bind(this);
         this.selectFirst = this.selectFirst.bind(this);
         this.selectionChanged = this.selectionChanged.bind(this);
-
         this.pattern = ko.observable();
         this.page = ko.observable(1);
         this.hasPrevPage = ko.observable();
@@ -57,11 +56,14 @@ export class ApiList {
     public async initialize(): Promise<void> {
         await this.loadApis(this.router.getCurrentRoute());
         this.router.addRouteChangeListener(this.loadApis);
+
+        this.pattern.subscribe(this.searchApis);
     }
 
     public itemHeight: ko.Observable<string>;
     public itemWidth: ko.Observable<string>;
 
+    
     public async loadApis(route?: Route): Promise<void> {
         const currentHash = route && route.hash;
         if (currentHash) {
@@ -151,12 +153,10 @@ export class ApiList {
             take: Constants.defaultPageSize
         };
 
-        
         const pageOfTagResources = await this.apiService.getApisByTags(query);
         const apiGroups = pageOfTagResources.value;
 
         this.apiGroups(apiGroups);
-
 
         this.hasPrevPage(pageNumber > 0);
         this.hasNextPage(!!pageOfTagResources.nextLink);

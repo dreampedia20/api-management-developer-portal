@@ -14,7 +14,8 @@
 
 
 <div>
-    <h1>list</h1>
+    <input type="text" class="form-control" placeholder="Search APIs" data-bind="delayedInput: pattern" />
+
     <!-- ko foreach: { data: $component.apiGroups, as: 'group' } -->
     <label data-bind="text: group.tag"></label>
     <div>
@@ -97,7 +98,7 @@
 <!-- /ko -->
 <!-- /ko -->
 <!-- ko if: apis().length === 0 -->
-<div class="list-placeholder list-group-placeholder" data-bind="if: $component.nodes().length === 0">
+<div class="list-placeholder list-group-placeholder" data-bind="if: $component.apis().length === 0">
     No APIs to display.
 </div>
 <!-- /ko -->
