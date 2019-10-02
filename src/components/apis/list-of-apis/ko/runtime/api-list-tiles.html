@@ -11,12 +11,17 @@
 
 <!-- ko ifnot: working -->
 <input type="text" class="form-control" placeholder="Search APIs" data-bind="delayedInput: pattern" />
+<label for="groupByTag">
+    Group by tag
+    <input id="groupByTag" type="checkbox"  name="groupByTag" data-bind="checked: $component.groupByTag" />
+</label>
+
 
 <!-- ko if: apis -->
 
 <!-- ko if: groupByTag -->
 <!-- ko foreach: { data: apiGroups, as: 'group' } -->
-<label data-bind="text: group.tag"></label>
+<h3 data-bind="text: group.tag"></h3>
 <div class="apis-tiles">
     <!-- ko foreach: { data: group.items, as: 'item' } -->
     <a href="#" data-bind="attr: { href: '/reference#?apiId=' + item.name }">

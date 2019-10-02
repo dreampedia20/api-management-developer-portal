@@ -48,7 +48,7 @@ export class ApiListTiles {
         this.hasNextPage = ko.observable();
         this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
         this.apiGroups = ko.observableArray();
-        this.groupByTag = ko.observable(false);
+        this.groupByTag = ko.observable(true);
     }
 
     @Param()
@@ -60,6 +60,7 @@ export class ApiListTiles {
 
         this.router.addRouteChangeListener(this.loadApis);
         this.pattern.subscribe(this.searchApis);
+        this.groupByTag.subscribe(this.searchApis);
     }
 
     public async loadApis(route?: Route): Promise<void> {
@@ -151,19 +152,26 @@ export class ApiListTiles {
             take: Constants.defaultPageSize
         };
 
-        const pageOfTagResources = await this.apiService.getApisByTags(query);
-        const apiGroups = pageOfTagResources.value;
+        let nextLink;
 
-        this.apiGroups(apiGroups);
+        if (this.groupByTag()) {
+            const pageOfTagResources = await this.apiService.getApisByTags(query);
+            const apiGroups = pageOfTagResources.value;
+
+            this.apiGroups(apiGroups);
+
+            nextLink = pageOfTagResources.nextLink;
+        }
+        else {
+            const pageOfApis = await this.apiService.getApis(query);
+            const apis = pageOfApis ? pageOfApis.value : [];
+            this.apis(this.groupApis(apis));
+
+            nextLink = pageOfApis.nextLink;
+        }
 
         this.hasPrevPage(pageNumber > 0);
-        this.hasNextPage(!!pageOfTagResources.nextLink);
-
-
-
-        const pageOfApis = await this.apiService.getApis(query);
-        const apis = pageOfApis ? pageOfApis.value : [];
-        this.apis(this.groupApis(apis));
+        this.hasNextPage(!!nextLink);
 
         this.working(false);
     }

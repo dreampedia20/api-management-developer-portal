@@ -83,17 +83,23 @@ export class ApiService {
 
         let query = `/apisByTags?expandApiVersionSet=true&$top=${take}&$skip=${skip}`;
 
+        const odataFilterEntries = [];
+        odataFilterEntries.push(`api/isCurrent eq true`);
+
         if (searchRequest) {
-            if (searchRequest.tags) {
-                searchRequest.tags.forEach((tag, index) => {
-                    query = Utils.addQueryParameter(query, `tags[${index}]=${tag}`);
-                });
+            if (searchRequest.tags && searchRequest.tags.length > 0) {
+                const tagFilterEntries = searchRequest.tags.map((tag) => `tag/name eq '${tag}'`);
+                odataFilterEntries.push(`(${tagFilterEntries.join(" or ")})`);
             }
 
             if (searchRequest.pattern) {
                 const pattern = Utils.escapeValueForODataFilter(searchRequest.pattern);
-                query = Utils.addQueryParameter(query, `$filter=contains(api/name,'${encodeURIComponent(pattern)}')`);
+                odataFilterEntries.push(`(contains(api/name,'${encodeURIComponent(pattern)}'))`);
             }
+        }
+
+        if (odataFilterEntries.length > 0) {
+            query = Utils.addQueryParameter(query, `$filter=` + odataFilterEntries.join(" and "));
         }
 
         const pageOfApiTagResources = await this.mapiClient.get<PageContract<ApiTagResourceContract>>(query);
