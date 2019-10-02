@@ -1,26 +1,26 @@
-<searchbox [placeholder]="'Search APIs'" [tags]="tags" (onSearch)="searchApis($event)"></searchbox>
-
-<!-- <p id="apiSearchResult" class="hide-text" role="region" aria-live="assertive" aria-label="Search result">
-    Number of APIs found - {{nodes.length}}
-</p> -->
-
 <!-- ko if: working -->
 <spinner class="fit"></spinner>
 <!-- /ko -->
 
-<input type="text" class="form-control" placeholder="Search APIs" data-bind="delayedInput: pattern" />
-
 <!-- ko ifnot: working -->
+<input type="search" class="form-control" placeholder="Search APIs" data-bind="delayedInput: pattern" />
+<label for="groupByTag">
+    Group by tag
+    <input id="groupByTag" type="checkbox" name="groupByTag" data-bind="checked: $component.groupByTag" />
+</label>
+
 <!-- ko if: apiGroups -->
 
+<!-- ko if: groupByTag -->
 <!-- ko foreach: { data: apiGroups, as: 'group' } -->
-<label data-bind="text: group.tag"></label>
+<h3 data-bind="text: group.tag"></h3>
 <div>
     <!-- ko foreach: { data: group.items, as: 'item' } -->
     <a href="#" data-bind="text: item.displayName"></a>
     <!-- /ko -->
 </div>
 <hr />
+<!-- /ko -->
 <!-- /ko -->
 
 <!-- ko if: hasPager -->
@@ -45,4 +45,7 @@
     </li>
     <!-- /ko -->
 </ul>
+<!-- /ko -->
+
+<!-- /ko -->
 <!-- /ko -->
