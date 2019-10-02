@@ -1,0 +1,48 @@
+<searchbox [placeholder]="'Search APIs'" [tags]="tags" (onSearch)="searchApis($event)"></searchbox>
+
+<!-- <p id="apiSearchResult" class="hide-text" role="region" aria-live="assertive" aria-label="Search result">
+    Number of APIs found - {{nodes.length}}
+</p> -->
+
+<!-- ko if: working -->
+<spinner class="fit"></spinner>
+<!-- /ko -->
+
+<input type="text" class="form-control" placeholder="Search APIs" data-bind="delayedInput: pattern" />
+
+<!-- ko ifnot: working -->
+<!-- ko if: apiGroups -->
+
+<!-- ko foreach: { data: apiGroups, as: 'group' } -->
+<label data-bind="text: group.tag"></label>
+<div>
+    <!-- ko foreach: { data: group.items, as: 'item' } -->
+    <a href="#" data-bind="text: item.displayName"></a>
+    <!-- /ko -->
+</div>
+<hr />
+<!-- /ko -->
+
+<!-- ko if: hasPager -->
+<ul class="pagination justify-content-center">
+    <!-- ko if: hasPrevPage -->
+    <li class="page-item">
+        <a href="#" class="page-link" role="button" aria-label="Previous page"
+            data-bind="click: prevPage, enable: hasPrevPage">
+            <i class="icon icon-chevron-left"></i>
+        </a>
+    </li>
+    <!-- /ko -->
+    <li class="page-item">
+        <span class="page-link" data-bind="text: page"></span>
+    </li>
+    <!-- ko if: hasNextPage -->
+    <li class="page-item">
+        <a href="#" class="page-link" role="button" aria-label="Next page"
+            data-bind="click: nextPage, enable: hasNextPage">
+            <i class="icon icon-chevron-right"></i>
+        </a>
+    </li>
+    <!-- /ko -->
+</ul>
+<!-- /ko -->

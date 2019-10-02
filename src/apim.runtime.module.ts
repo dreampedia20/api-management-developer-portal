@@ -5,7 +5,7 @@ import { XmlHttpRequestClient } from "@paperbits/common/http";
 import { SettingsProvider } from "@paperbits/common/configuration";
 import { DefaultRouter } from "@paperbits/common/routing";
 import { KnockoutRegistrationLoaders } from "@paperbits/core/ko/knockout.loaders";
-import { ApiList } from "./components/apis/list-of-apis/ko/runtime/api-list";
+import { ApiList, ApiListDropdown, ApiListTiles } from "./components/apis/list-of-apis/ko/runtime";
 import { ApiService } from "./services/apiService";
 import { TagService } from "./services/tagService";
 import { TenantService } from "./services/tenantService";
@@ -45,6 +45,8 @@ export class ApimRuntimeModule implements IInjectorModule {
         // injector.bindToCollection("routeGuards", AccessTokenRouteGuard);
         injector.bindSingleton("router", DefaultRouter);
         injector.bind("apiList", ApiList);
+        injector.bind("apiListDropdown", ApiListDropdown);
+        injector.bind("apiListTiles", ApiListTiles);
         injector.bind("apiDetails", ApiDetails);
         injector.bind("operationDetails", OperationDetails);
         injector.bind("operationConsole", OperationConsole);

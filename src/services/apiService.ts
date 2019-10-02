@@ -47,10 +47,11 @@ export class ApiService {
             }
         }
 
-        const result = await this.mapiClient.get<Page<ApiContract>>(query);
+        const pageOfApis = await this.mapiClient.get<Page<ApiContract>>(query);
 
         const page = new Page<Api>();
-        page.value = result.value.map(x => new Api(x));
+        page.value = pageOfApis.value.map(x => new Api(x));
+        page.nextLink = pageOfApis.nextLink;
 
         return page;
     }

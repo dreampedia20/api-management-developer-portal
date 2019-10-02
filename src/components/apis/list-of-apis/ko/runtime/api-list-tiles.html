@@ -1,36 +1,32 @@
 <searchbox [placeholder]="'Search APIs'" [tags]="tags" (onSearch)="searchApis($event)"></searchbox>
 
+<!-- <p id="apiSearchResult" class="hide-text" role="region" aria-live="assertive" aria-label="Search result">
+    Number of APIs found - {{nodes.length}}
+</p> -->
+
+
 <!-- ko if: working -->
 <spinner class="fit"></spinner>
 <!-- /ko -->
 
-<input type="text" class="form-control" placeholder="Search APIs" data-bind="delayedInput: pattern" />
-
 <!-- ko ifnot: working -->
+
+<input type="text" class="form-control" placeholder="Search APIs" data-bind="delayedInput: pattern" />
 
 <!-- ko if: apis -->
 
-<!-- ko if: groupByTag -->
-<!-- ko foreach: { data: apiGroups, as: 'group' } -->
-<label data-bind="text: group.tag"></label>
-<div>
-    <!-- ko foreach: { data: group.items, as: 'item' } -->
-    <a href="#" data-bind="text: item.displayName"></a>
+<div class="apis-tiles">
+    <!-- ko foreach: { data: apis, as: 'item' } -->
+    <a href="#" data-bind="attr: { href: '/reference#?apiId=' + item.name }">
+        <div class="card card-default">
+            <h3 data-bind="text: item.displayName"></h3>
+            <div class="tile line-clamp">
+                <p class="tile-content" data-bind="markdown: item.description"></p>
+            </div>
+        </div>
+    </a>
     <!-- /ko -->
 </div>
-<hr />
-<!-- /ko -->
-<!-- /ko -->
-
-<!-- ko ifnot: groupByTag -->
-<ul class="nav" data-bind="foreach: { data: apis, as: 'item' }">
-    <li class="nav-item" role="listitem">
-        <a href="#" class="av-link text-truncate" data-bind="attr: { href: '#?apiId=' + item.name }">
-            <span data-bind="text: item.displayName"></span>
-        </a>
-    </li>
-</ul>
-<!-- /ko -->
 
 <!-- ko if: hasPager -->
 <ul class="pagination justify-content-center">
@@ -55,6 +51,12 @@
     <!-- /ko -->
 </ul>
 <!-- /ko -->
-
 <!-- /ko -->
+
+<!-- ko if: apis().length === 0 -->
+<div class="list-placeholder list-group-placeholder" data-bind="if: $component.apis().length === 0">
+    No APIs to display.
+</div>
+<!-- /ko -->
+
 <!-- /ko -->
