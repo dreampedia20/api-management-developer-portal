@@ -1,12 +1,13 @@
-<searchbox [placeholder]="'Search APIs'" [tags]="tags" (onSearch)="searchApis($event)"></searchbox>
-
 <!-- ko if: working -->
 <spinner class="fit"></spinner>
 <!-- /ko -->
 
-<input type="text" class="form-control" placeholder="Search APIs" data-bind="delayedInput: pattern" />
-
 <!-- ko ifnot: working -->
+<input type="text" class="form-control" placeholder="Search APIs" data-bind="delayedInput: pattern" />
+<label for="groupByTag">
+    Group by tag
+    <input id="groupByTag" type="checkbox" name="groupByTag" data-bind="checked: $component.groupByTag" />
+</label>
 
 <!-- ko if: apis -->
 

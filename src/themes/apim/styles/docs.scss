@@ -376,3 +376,10 @@ schema-details {
         margin-top: 20px;
     }
 }
+
+api-list {
+    .nav-item { 
+        display: block;
+        flex-basis: 100%;
+    }
+}

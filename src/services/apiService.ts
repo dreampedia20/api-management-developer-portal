@@ -81,7 +81,7 @@ export class ApiService {
         const skip = searchRequest && searchRequest.skip || 0;
         const take = searchRequest && searchRequest.take || Constants.defaultPageSize;
 
-        let query = `/apisByTags?expandApiVersionSet=true&$top=${take}&$skip=${skip}`;
+        let query = `/apisByTags?includeNotTaggedApis=true&$top=${take}&$skip=${skip}`;
 
         const odataFilterEntries = [];
         odataFilterEntries.push(`api/isCurrent eq true`);
@@ -111,12 +111,22 @@ export class ApiService {
             const tagContract: TagContract = x.tag ? Utils.armifyContract(x.tag) : null;
             const apiContract: ApiContract = x.api ? Utils.armifyContract(x.api) : null;
 
-            let tagGroup = tagGroups[tagContract.properties.displayName];
+            let tagGroup: TagGroup<Api>;
+            let tagName: string;
+
+            if (tagContract) {
+                tagName = tagContract.properties.displayName;
+            }
+            else {
+                tagName = "Not tagged";
+            }
+
+            tagGroup = tagGroups[tagName];
 
             if (!tagGroup) {
                 tagGroup = new TagGroup<Api>();
-                tagGroup.tag = tagContract.properties.displayName;
-                tagGroups[tagContract.properties.displayName] = tagGroup;
+                tagGroup.tag = tagName;
+                tagGroups[tagName] = tagGroup;
             }
             tagGroup.items.push(new Api(apiContract));
         });

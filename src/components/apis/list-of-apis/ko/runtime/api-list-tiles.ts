@@ -32,7 +32,7 @@ export class ApiListTiles {
 
     constructor(
         private readonly apiService: ApiService,
-        private readonly router: DefaultRouter
+        private readonly router: DefaultRouter,
     ) {
         this.apis = ko.observableArray([]);
         this.itemStyleView = ko.observable();
@@ -142,47 +142,44 @@ export class ApiListTiles {
     }
 
     public async searchApis(): Promise<void> {
-        this.working(true);
+        try {
+            this.working(true);
 
-        const pageNumber = this.page() - 1;
+            const pageNumber = this.page() - 1;
 
-        const query: SearchQuery = {
-            pattern: this.pattern(),
-            skip: pageNumber * Constants.defaultPageSize,
-            take: Constants.defaultPageSize
-        };
+            const query: SearchQuery = {
+                pattern: this.pattern(),
+                skip: pageNumber * Constants.defaultPageSize,
+                take: Constants.defaultPageSize
+            };
 
-        let nextLink;
+            let nextLink;
 
-        if (this.groupByTag()) {
-            const pageOfTagResources = await this.apiService.getApisByTags(query);
-            const apiGroups = pageOfTagResources.value;
+            if (this.groupByTag()) {
+                const pageOfTagResources = await this.apiService.getApisByTags(query);
+                const apiGroups = pageOfTagResources.value;
 
-            this.apiGroups(apiGroups);
+                this.apiGroups(apiGroups);
 
-            nextLink = pageOfTagResources.nextLink;
+                nextLink = pageOfTagResources.nextLink;
+            }
+            else {
+                const pageOfApis = await this.apiService.getApis(query);
+                const apis = pageOfApis ? pageOfApis.value : [];
+                this.apis(apis);
+
+                nextLink = pageOfApis.nextLink;
+            }
+
+            this.hasPrevPage(pageNumber > 0);
+            this.hasNextPage(!!nextLink);
         }
-        else {
-            const pageOfApis = await this.apiService.getApis(query);
-            const apis = pageOfApis ? pageOfApis.value : [];
-            this.apis(this.groupApis(apis));
-
-            nextLink = pageOfApis.nextLink;
+        catch (error) {
+            console.error(`Unable to load APIs.`);
         }
-
-        this.hasPrevPage(pageNumber > 0);
-        this.hasNextPage(!!nextLink);
-
-        this.working(false);
-    }
-
-    private groupApis(apis: Api[]): Api[] {
-        apis = apis.filter(x => x.isCurrent);
-        const result = apis.filter(x => !x.apiVersionSet);
-        const versionedApis = apis.filter(x => !!x.apiVersionSet);
-        const groups = Utils.groupBy(versionedApis, x => x.apiVersionSet.id);
-        result.push(...groups.map(g => g[g.length - 1]));
-        return result;
+        finally {
+            this.working(false);
+        }
     }
 
     public dispose(): void {
