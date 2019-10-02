@@ -13,7 +13,7 @@
 
 <!-- ko if: groupByTag -->
 <!-- ko foreach: { data: apiGroups, as: 'group' } -->
-<label data-bind="text: group.tag"></label>
+<h3 data-bind="text: group.tag"></h3>
 <div>
     <!-- ko foreach: { data: group.items, as: 'item' } -->
     <a href="#" data-bind="text: item.displayName"></a>

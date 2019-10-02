@@ -59,6 +59,7 @@ export class ApiList {
 
         this.router.addRouteChangeListener(this.loadApis);
         this.pattern.subscribe(this.searchApis);
+        this.groupByTag.subscribe(this.searchApis);
     }
 
     public async loadApis(route?: Route): Promise<void> {
@@ -174,7 +175,7 @@ export class ApiList {
             this.hasNextPage(!!nextLink);
         }
         catch (error) {
-            console.error(`Unable to load APIs.`);
+            console.error(`Unable to load APIs. ${error}`);
         }
         finally {
             this.working(false);

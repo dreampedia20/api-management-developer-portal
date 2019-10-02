@@ -48,7 +48,7 @@ export class ApiListTiles {
         this.hasNextPage = ko.observable();
         this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
         this.apiGroups = ko.observableArray();
-        this.groupByTag = ko.observable(true);
+        this.groupByTag = ko.observable(false);
     }
 
     @Param()
@@ -175,7 +175,7 @@ export class ApiListTiles {
             this.hasNextPage(!!nextLink);
         }
         catch (error) {
-            console.error(`Unable to load APIs.`);
+            console.error(`Unable to load APIs. ${error}`);
         }
         finally {
             this.working(false);

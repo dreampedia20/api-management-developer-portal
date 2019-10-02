@@ -27,6 +27,7 @@ export class ApiListDropdown {
     public readonly hasPager: ko.Computed<boolean>;
     public readonly hasPrevPage: ko.Observable<boolean>;
     public readonly hasNextPage: ko.Observable<boolean>;
+    public readonly groupByTag: ko.Observable<boolean>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -46,6 +47,7 @@ export class ApiListDropdown {
         this.hasNextPage = ko.observable();
         this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
         this.apiGroups = ko.observableArray();
+        this.groupByTag = ko.observable(false);
     }
 
     @Param()
@@ -57,6 +59,7 @@ export class ApiListDropdown {
         
         this.router.addRouteChangeListener(this.loadApis);
         this.pattern.subscribe(this.searchApis);
+        this.groupByTag.subscribe(this.searchApis);
     }
 
     public async loadApis(route?: Route): Promise<void> {
@@ -141,25 +144,44 @@ export class ApiListDropdown {
      * Initiates searching APIs.
      */
     public async searchApis(): Promise<void> {
-        this.working(true);
+        try {
+            this.working(true);
 
-        const pageNumber = this.page() - 1;
+            const pageNumber = this.page() - 1;
 
-        const query: SearchQuery = {
-            pattern: this.pattern(),
-            skip: pageNumber * Constants.defaultPageSize,
-            take: Constants.defaultPageSize
-        };
+            const query: SearchQuery = {
+                pattern: this.pattern(),
+                skip: pageNumber * Constants.defaultPageSize,
+                take: Constants.defaultPageSize
+            };
 
-        const pageOfTagResources = await this.apiService.getApisByTags(query);
-        const apiGroups = pageOfTagResources.value;
+            let nextLink;
 
-        this.apiGroups(apiGroups);
+            if (this.groupByTag()) {
+                const pageOfTagResources = await this.apiService.getApisByTags(query);
+                const apiGroups = pageOfTagResources.value;
 
-        this.hasPrevPage(pageNumber > 0);
-        this.hasNextPage(!!pageOfTagResources.nextLink);
+                this.apiGroups(apiGroups);
 
-        this.working(false);
+                nextLink = pageOfTagResources.nextLink;
+            }
+            else {
+                const pageOfApis = await this.apiService.getApis(query);
+                const apis = pageOfApis ? pageOfApis.value : [];
+                this.apis(apis);
+
+                nextLink = pageOfApis.nextLink;
+            }
+
+            this.hasPrevPage(pageNumber > 0);
+            this.hasNextPage(!!nextLink);
+        }
+        catch (error) {
+            console.error(`Unable to load APIs. ${error}`);
+        }
+        finally {
+            this.working(false);
+        }
     }
 
     /**
