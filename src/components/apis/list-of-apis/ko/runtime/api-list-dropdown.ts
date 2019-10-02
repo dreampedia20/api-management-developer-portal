@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
-import template from "./api-list.html";
+import template from "./api-list-dropdown.html";
 import { Component, RuntimeComponent, Param, OnMounted } from "@paperbits/common/ko/decorators";
 import { ApiService } from "../../../../../services/apiService";
 import { DefaultRouter, Route } from "@paperbits/common/routing";

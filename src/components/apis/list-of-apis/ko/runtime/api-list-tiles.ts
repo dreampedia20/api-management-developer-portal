@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
-import template from "./api-list.html";
+import template from "./api-list-tiles.html";
 import { Component, RuntimeComponent, Param, OnMounted } from "@paperbits/common/ko/decorators";
 import { Utils } from "../../../../../utils";
 import { ApiService } from "../../../../../services/apiService";
@@ -28,6 +28,7 @@ export class ApiListTiles {
     public readonly hasPager: ko.Computed<boolean>;
     public readonly hasPrevPage: ko.Observable<boolean>;
     public readonly hasNextPage: ko.Observable<boolean>;
+    public readonly groupByTag: ko.Observable<boolean>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -47,6 +48,7 @@ export class ApiListTiles {
         this.hasNextPage = ko.observable();
         this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
         this.apiGroups = ko.observableArray();
+        this.groupByTag = ko.observable(false);
     }
 
     @Param()
@@ -62,6 +64,7 @@ export class ApiListTiles {
 
     public async loadApis(route?: Route): Promise<void> {
         const currentHash = route && route.hash;
+
         if (currentHash) {
             this.queryParams = new URLSearchParams(currentHash);
 
@@ -126,7 +129,6 @@ export class ApiListTiles {
             this.applySelectedApi();
         }
     }
-
 
     public prevPage(): void {
         this.page(this.page() - 1);

@@ -10,11 +10,30 @@
 <!-- /ko -->
 
 <!-- ko ifnot: working -->
-
 <input type="text" class="form-control" placeholder="Search APIs" data-bind="delayedInput: pattern" />
 
 <!-- ko if: apis -->
 
+<!-- ko if: groupByTag -->
+<!-- ko foreach: { data: apiGroups, as: 'group' } -->
+<label data-bind="text: group.tag"></label>
+<div class="apis-tiles">
+    <!-- ko foreach: { data: group.items, as: 'item' } -->
+    <a href="#" data-bind="attr: { href: '/reference#?apiId=' + item.name }">
+        <div class="card card-default">
+            <h3 data-bind="text: item.displayName"></h3>
+            <div class="tile line-clamp">
+                <p class="tile-content" data-bind="markdown: item.description"></p>
+            </div>
+        </div>
+    </a>
+    <!-- /ko -->
+</div>
+<hr />
+<!-- /ko -->
+<!-- /ko -->
+
+<!-- ko ifnot: groupByTag -->
 <div class="apis-tiles">
     <!-- ko foreach: { data: apis, as: 'item' } -->
     <a href="#" data-bind="attr: { href: '/reference#?apiId=' + item.name }">
@@ -27,6 +46,8 @@
     </a>
     <!-- /ko -->
 </div>
+<!-- /ko -->
+
 
 <!-- ko if: hasPager -->
 <ul class="pagination justify-content-center">
@@ -51,6 +72,7 @@
     <!-- /ko -->
 </ul>
 <!-- /ko -->
+
 <!-- /ko -->
 
 <!-- ko if: apis().length === 0 -->
