@@ -6,7 +6,7 @@
     <!-- /ko -->
 </div>
 
-<div class="dropdown" data-bind="if: expanded">
+<div class="dropdown" data-bind="visible: expanded">
     <!-- ko if: working -->
     <spinner class="fit"></spinner>
     <!-- /ko -->
@@ -19,7 +19,7 @@
     </div>
     <div>
         <!-- ko foreach: { data: group.items, as: 'item' } -->
-        <a href="#" data-bind="text: item.displayName"></a>
+        <a href="#" class="nav-link" data-bind="text: item.displayName"></a>
         <!-- /ko -->
     </div>
     <!-- /ko -->
