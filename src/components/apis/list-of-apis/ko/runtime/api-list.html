@@ -16,21 +16,30 @@
 <h3 data-bind="text: group.tag"></h3>
 <div>
     <!-- ko foreach: { data: group.items, as: 'item' } -->
-    <a href="#" data-bind="text: item.displayName"></a>
+    <div class="row">
+        <div class="col-3">
+            <a href="#" class="text-truncate"
+                data-bind="attr: { href: '#?apiId=' + item.name }, text: item.displayName"></a>
+        </div>
+        <div class="col-7" data-bind="markdown: item.description">
+        </div>
+    </div>
     <!-- /ko -->
 </div>
-<hr />
 <!-- /ko -->
 <!-- /ko -->
 
 <!-- ko ifnot: groupByTag -->
-<ul class="nav" data-bind="foreach: { data: apis, as: 'item' }">
-    <li class="nav-item" role="listitem">
-        <a href="#" class="av-link text-truncate" data-bind="attr: { href: '#?apiId=' + item.name }">
-            <span data-bind="text: item.displayName"></span>
-        </a>
-    </li>
-</ul>
+<div data-bind="foreach: { data: apis, as: 'item' }">
+    <div class="row">
+        <div class="col-3">
+            <a href="#" class="text-truncate"
+                data-bind="attr: { href: '#?apiId=' + item.name }, text: item.displayName"></a>
+        </div>
+        <div class="col-7" data-bind="markdown: item.description">
+        </div>
+    </div>
+</div>
 <!-- /ko -->
 
 <!-- ko if: hasPager -->

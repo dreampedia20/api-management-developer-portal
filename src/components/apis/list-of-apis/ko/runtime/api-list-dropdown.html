@@ -1,51 +1,53 @@
-<!-- ko if: working -->
-<spinner class="fit"></spinner>
-<!-- /ko -->
-
-<!-- ko ifnot: working -->
-<input type="search" class="form-control" placeholder="Search APIs" data-bind="delayedInput: pattern" />
-<label for="groupByTag">
-    Group by tag
-    <input id="groupByTag" type="checkbox" name="groupByTag" data-bind="checked: $component.groupByTag" />
-</label>
-
-<!-- ko if: apiGroups -->
-
-<!-- ko if: groupByTag -->
-<!-- ko foreach: { data: apiGroups, as: 'group' } -->
-<h3 data-bind="text: group.tag"></h3>
-<div>
-    <!-- ko foreach: { data: group.items, as: 'item' } -->
-    <a href="#" data-bind="text: item.displayName"></a>
+<div class="form-control" data-bind="click: toggle">
+    <!-- ko if: selectedApi -->
+    <!-- ko with: selectedApi -->
+    <span data-bind="text: displayName"></span>
+    <!-- /ko -->
     <!-- /ko -->
 </div>
-<hr />
-<!-- /ko -->
-<!-- /ko -->
 
-<!-- ko if: hasPager -->
-<ul class="pagination justify-content-center">
-    <!-- ko if: hasPrevPage -->
-    <li class="page-item">
-        <a href="#" class="page-link" role="button" aria-label="Previous page"
-            data-bind="click: prevPage, enable: hasPrevPage">
-            <i class="icon icon-chevron-left"></i>
-        </a>
-    </li>
+<div class="dropdown" data-bind="if: expanded">
+    <!-- ko if: working -->
+    <spinner class="fit"></spinner>
     <!-- /ko -->
-    <li class="page-item">
-        <span class="page-link" data-bind="text: page"></span>
-    </li>
-    <!-- ko if: hasNextPage -->
-    <li class="page-item">
-        <a href="#" class="page-link" role="button" aria-label="Next page"
-            data-bind="click: nextPage, enable: hasNextPage">
-            <i class="icon icon-chevron-right"></i>
-        </a>
-    </li>
-    <!-- /ko -->
-</ul>
-<!-- /ko -->
 
-<!-- /ko -->
-<!-- /ko -->
+    <!-- ko ifnot: working -->
+    <!-- ko if: apiGroups -->
+    <!-- ko foreach: { data: apiGroups, as: 'group' } -->
+    <div>
+        <span class="tag" data-bind="text: group.tag"></span>
+    </div>
+    <div>
+        <!-- ko foreach: { data: group.items, as: 'item' } -->
+        <a href="#" data-bind="text: item.displayName"></a>
+        <!-- /ko -->
+    </div>
+    <!-- /ko -->
+
+    <!-- ko if: hasPager -->
+    <ul class="pagination justify-content-center">
+        <!-- ko if: hasPrevPage -->
+        <li class="page-item">
+            <a href="#" class="page-link" role="button" aria-label="Previous page"
+                data-bind="click: prevPage, enable: hasPrevPage">
+                <i class="icon icon-chevron-left"></i>
+            </a>
+        </li>
+        <!-- /ko -->
+        <li class="page-item">
+            <span class="page-link" data-bind="text: page"></span>
+        </li>
+        <!-- ko if: hasNextPage -->
+        <li class="page-item">
+            <a href="#" class="page-link" role="button" aria-label="Next page"
+                data-bind="click: nextPage, enable: hasNextPage">
+                <i class="icon icon-chevron-right"></i>
+            </a>
+        </li>
+        <!-- /ko -->
+    </ul>
+    <!-- /ko -->
+
+    <!-- /ko -->
+    <!-- /ko -->
+</div>
