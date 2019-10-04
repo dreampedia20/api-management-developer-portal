@@ -1,70 +1,75 @@
-<!-- ko if: working -->
-<spinner class="fit"></spinner>
-<!-- /ko -->
-
-<!-- ko ifnot: working -->
 <input type="search" class="form-control" placeholder="Search APIs" data-bind="delayedInput: pattern" />
+
 <label for="groupByTag">
     Group by tag
     <input id="groupByTag" type="checkbox" name="groupByTag" data-bind="checked: $component.groupByTag" />
 </label>
 
-<!-- ko if: apis -->
-
-<!-- ko if: groupByTag -->
-<!-- ko foreach: { data: apiGroups, as: 'group' } -->
-<h3 data-bind="text: group.tag"></h3>
 <div>
-    <!-- ko foreach: { data: group.items, as: 'item' } -->
-    <div class="row">
-        <div class="col-3">
-            <a href="#" class="text-truncate"
-                data-bind="attr: { href: '#?apiId=' + item.name }, text: item.displayName"></a>
+    <!-- ko if: working -->
+    <spinner class="fit"></spinner>
+    <!-- /ko -->
+
+    <!-- ko ifnot: working -->
+    <!-- ko if: apis -->
+
+    <!-- ko if: groupByTag -->
+    <!-- ko foreach: { data: apiGroups, as: 'group' } -->
+    <div>
+        <span class="tag" data-bind="text: group.tag"></span>
+    </div>
+    <div>
+        <!-- ko foreach: { data: group.items, as: 'item' } -->
+        <div class="row">
+            <div class="col-3">
+                <a href="#" class="text-truncate"
+                    data-bind="attr: { href: '#?apiId=' + item.name }, text: item.displayName"></a>
+            </div>
+            <div class="col-7" data-bind="markdown: item.description">
+            </div>
         </div>
-        <div class="col-7" data-bind="markdown: item.description">
+        <!-- /ko -->
+    </div>
+    <!-- /ko -->
+    <!-- /ko -->
+
+    <!-- ko ifnot: groupByTag -->
+    <div data-bind="foreach: { data: apis, as: 'item' }">
+        <div class="row">
+            <div class="col-3">
+                <a href="#" class="text-truncate"
+                    data-bind="attr: { href: '#?apiId=' + item.name }, text: item.displayName"></a>
+            </div>
+            <div class="col-7" data-bind="markdown: item.description">
+            </div>
         </div>
     </div>
     <!-- /ko -->
-</div>
-<!-- /ko -->
-<!-- /ko -->
 
-<!-- ko ifnot: groupByTag -->
-<div data-bind="foreach: { data: apis, as: 'item' }">
-    <div class="row">
-        <div class="col-3">
-            <a href="#" class="text-truncate"
-                data-bind="attr: { href: '#?apiId=' + item.name }, text: item.displayName"></a>
-        </div>
-        <div class="col-7" data-bind="markdown: item.description">
-        </div>
-    </div>
-</div>
-<!-- /ko -->
-
-<!-- ko if: hasPager -->
-<ul class="pagination justify-content-center">
-    <!-- ko if: hasPrevPage -->
-    <li class="page-item">
-        <a href="#" class="page-link" role="button" aria-label="Previous page"
-            data-bind="click: prevPage, enable: hasPrevPage">
-            <i class="icon icon-chevron-left"></i>
-        </a>
-    </li>
+    <!-- ko if: hasPager -->
+    <ul class="pagination justify-content-center">
+        <!-- ko if: hasPrevPage -->
+        <li class="page-item">
+            <a href="#" class="page-link" role="button" aria-label="Previous page"
+                data-bind="click: prevPage, enable: hasPrevPage">
+                <i class="icon icon-chevron-left"></i>
+            </a>
+        </li>
+        <!-- /ko -->
+        <li class="page-item">
+            <span class="page-link" data-bind="text: page"></span>
+        </li>
+        <!-- ko if: hasNextPage -->
+        <li class="page-item">
+            <a href="#" class="page-link" role="button" aria-label="Next page"
+                data-bind="click: nextPage, enable: hasNextPage">
+                <i class="icon icon-chevron-right"></i>
+            </a>
+        </li>
+        <!-- /ko -->
+    </ul>
     <!-- /ko -->
-    <li class="page-item">
-        <span class="page-link" data-bind="text: page"></span>
-    </li>
-    <!-- ko if: hasNextPage -->
-    <li class="page-item">
-        <a href="#" class="page-link" role="button" aria-label="Next page"
-            data-bind="click: nextPage, enable: hasNextPage">
-            <i class="icon icon-chevron-right"></i>
-        </a>
-    </li>
-    <!-- /ko -->
-</ul>
-<!-- /ko -->
 
-<!-- /ko -->
-<!-- /ko -->
+    <!-- /ko -->
+    <!-- /ko -->
+</div>

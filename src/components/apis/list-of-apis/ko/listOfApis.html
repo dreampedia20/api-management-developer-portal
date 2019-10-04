@@ -1,3 +1,11 @@
+<!-- ko if: itemStyleView() === 'list' -->
 <api-list></api-list>
+<!-- /ko -->
+
+<!-- ko if: itemStyleView() === 'dropdown' -->
 <api-list-dropdown></api-list-dropdown>
+<!-- /ko -->
+
+<!-- ko if: itemStyleView() === 'tiles' -->
 <api-list-tiles></api-list-tiles>
+<!-- /ko -->

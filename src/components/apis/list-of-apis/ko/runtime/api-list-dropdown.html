@@ -5,49 +5,57 @@
     <!-- /ko -->
     <!-- /ko -->
 </div>
-
 <div class="dropdown" data-bind="visible: expanded">
-    <!-- ko if: working -->
-    <spinner class="fit"></spinner>
-    <!-- /ko -->
+    <input type="search" class="form-control" placeholder="Search APIs" data-bind="delayedInput: pattern" />
 
-    <!-- ko ifnot: working -->
-    <!-- ko if: apiGroups -->
-    <!-- ko foreach: { data: apiGroups, as: 'group' } -->
     <div>
-        <span class="tag" data-bind="text: group.tag"></span>
-    </div>
-    <div>
-        <!-- ko foreach: { data: group.items, as: 'item' } -->
-        <a href="#" class="nav-link" data-bind="text: item.displayName"></a>
+        <!-- ko if: working -->
+        <spinner class="fit"></spinner>
         <!-- /ko -->
-    </div>
-    <!-- /ko -->
 
-    <!-- ko if: hasPager -->
-    <ul class="pagination justify-content-center">
-        <!-- ko if: hasPrevPage -->
-        <li class="page-item">
-            <a href="#" class="page-link" role="button" aria-label="Previous page"
-                data-bind="click: prevPage, enable: hasPrevPage">
-                <i class="icon icon-chevron-left"></i>
-            </a>
-        </li>
+        <!-- ko ifnot: working -->
+        <!-- ko if: apiGroups -->
+        <!-- ko foreach: { data: apiGroups, as: 'group' } -->
+        <div class="collapsible">
+            <div>
+                <button class="collapsible-trigger">
+                    <i class="icon icon icon-chevron-right"></i>
+                </button>
+                <span class="tag" data-bind="text: group.tag"></span>
+            </div>
+            <div class="collapsible-container">
+                <!-- ko foreach: { data: group.items, as: 'item' } -->
+                <a href="#" class="nav-link" data-bind="text: item.displayName"></a>
+                <!-- /ko -->
+            </div>
+        </div>
         <!-- /ko -->
-        <li class="page-item">
-            <span class="page-link" data-bind="text: page"></span>
-        </li>
-        <!-- ko if: hasNextPage -->
-        <li class="page-item">
-            <a href="#" class="page-link" role="button" aria-label="Next page"
-                data-bind="click: nextPage, enable: hasNextPage">
-                <i class="icon icon-chevron-right"></i>
-            </a>
-        </li>
-        <!-- /ko -->
-    </ul>
-    <!-- /ko -->
 
-    <!-- /ko -->
-    <!-- /ko -->
+        <!-- ko if: hasPager -->
+        <ul class="pagination justify-content-center">
+            <!-- ko if: hasPrevPage -->
+            <li class="page-item">
+                <a href="#" class="page-link" role="button" aria-label="Previous page"
+                    data-bind="click: prevPage, enable: hasPrevPage">
+                    <i class="icon icon-chevron-left"></i>
+                </a>
+            </li>
+            <!-- /ko -->
+            <li class="page-item">
+                <span class="page-link" data-bind="text: page"></span>
+            </li>
+            <!-- ko if: hasNextPage -->
+            <li class="page-item">
+                <a href="#" class="page-link" role="button" aria-label="Next page"
+                    data-bind="click: nextPage, enable: hasNextPage">
+                    <i class="icon icon-chevron-right"></i>
+                </a>
+            </li>
+            <!-- /ko -->
+        </ul>
+        <!-- /ko -->
+
+        <!-- /ko -->
+        <!-- /ko -->
+    </div>
 </div>

@@ -268,14 +268,6 @@ operation-console {
     }
 }
 
-.collapsible {
-    display: none;
-    @media (min-width: $breakpoint-lg) {
-        display: block;
-        margin-left: 100px;
-    }
-}
-
 .apis-section {
     padding: 0;
 

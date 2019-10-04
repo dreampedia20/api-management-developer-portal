@@ -1,81 +1,87 @@
-<!-- ko if: working -->
-<spinner class="fit"></spinner>
-<!-- /ko -->
-
-<!-- ko ifnot: working -->
 <input type="search" class="form-control" placeholder="Search APIs" data-bind="delayedInput: pattern" />
+
 <label for="groupByTag">
     Group by tag
     <input id="groupByTag" type="checkbox" name="groupByTag" data-bind="checked: $component.groupByTag" />
 </label>
 
-<!-- ko if: apis -->
+<div>
+    <!-- ko if: working -->
+    <spinner class="fit"></spinner>
+    <!-- /ko -->
+    <!-- ko ifnot: working -->
 
-<!-- ko if: groupByTag -->
-<!-- ko foreach: { data: apiGroups, as: 'group' } -->
-<h3 data-bind="text: group.tag"></h3>
-<div class="apis-tiles">
-    <!-- ko foreach: { data: group.items, as: 'item' } -->
-    <a href="#" data-bind="attr: { href: '/reference#?apiId=' + item.name }">
-        <div class="card card-default">
-            <h3 data-bind="text: item.displayName"></h3>
-            <div class="tile line-clamp">
-                <p class="tile-content" data-bind="markdown: item.description"></p>
+    <!-- ko if: apis -->
+
+    <!-- ko if: groupByTag -->
+    <!-- ko foreach: { data: apiGroups, as: 'group' } -->
+    <div>
+        <span class="tag" data-bind="text: group.tag"></span>
+    </div>
+    <div class="apis-tiles">
+        <!-- ko foreach: { data: group.items, as: 'item' } -->
+        <a href="#" data-bind="attr: { href: '/reference#?apiId=' + item.name }">
+            <div class="card card-default">
+                <h3 data-bind="text: item.displayName"></h3>
+                <div class="tile line-clamp">
+                    <p class="tile-content" data-bind="markdown: item.description"></p>
+                </div>
             </div>
-        </div>
-    </a>
+        </a>
+        <!-- /ko -->
+    </div>
+    <hr />
     <!-- /ko -->
-</div>
-<hr />
-<!-- /ko -->
-<!-- /ko -->
+    <!-- /ko -->
 
-<!-- ko ifnot: groupByTag -->
-<div class="apis-tiles">
-    <!-- ko foreach: { data: apis, as: 'item' } -->
-    <a href="#" data-bind="attr: { href: '/reference#?apiId=' + item.name }">
-        <div class="card card-default">
-            <h3 data-bind="text: item.displayName"></h3>
-            <div class="tile line-clamp">
-                <p class="tile-content" data-bind="markdown: item.description"></p>
+    <!-- ko ifnot: groupByTag -->
+    <div class="apis-tiles">
+        <!-- ko foreach: { data: apis, as: 'item' } -->
+        <a href="#" data-bind="attr: { href: '/reference#?apiId=' + item.name }">
+            <div class="card card-default">
+                <h3 data-bind="text: item.displayName"></h3>
+                <div class="tile line-clamp">
+                    <p class="tile-content" data-bind="markdown: item.description"></p>
+                </div>
             </div>
-        </div>
-    </a>
-    <!-- /ko -->
-</div>
-<!-- /ko -->
-
-
-<!-- ko if: hasPager -->
-<ul class="pagination justify-content-center">
-    <!-- ko if: hasPrevPage -->
-    <li class="page-item">
-        <a href="#" class="page-link" role="button" aria-label="Previous page"
-            data-bind="click: prevPage, enable: hasPrevPage">
-            <i class="icon icon-chevron-left"></i>
         </a>
-    </li>
+        <!-- /ko -->
+    </div>
     <!-- /ko -->
-    <li class="page-item">
-        <span class="page-link" data-bind="text: page"></span>
-    </li>
-    <!-- ko if: hasNextPage -->
-    <li class="page-item">
-        <a href="#" class="page-link" role="button" aria-label="Next page"
-            data-bind="click: nextPage, enable: hasNextPage">
-            <i class="icon icon-chevron-right"></i>
-        </a>
-    </li>
+
+
+    <!-- ko if: hasPager -->
+    <ul class="pagination justify-content-center">
+        <!-- ko if: hasPrevPage -->
+        <li class="page-item">
+            <a href="#" class="page-link" role="button" aria-label="Previous page"
+                data-bind="click: prevPage, enable: hasPrevPage">
+                <i class="icon icon-chevron-left"></i>
+            </a>
+        </li>
+        <!-- /ko -->
+        <li class="page-item">
+            <span class="page-link" data-bind="text: page"></span>
+        </li>
+        <!-- ko if: hasNextPage -->
+        <li class="page-item">
+            <a href="#" class="page-link" role="button" aria-label="Next page"
+                data-bind="click: nextPage, enable: hasNextPage">
+                <i class="icon icon-chevron-right"></i>
+            </a>
+        </li>
+        <!-- /ko -->
+    </ul>
     <!-- /ko -->
-</ul>
-<!-- /ko -->
 
-<!-- /ko -->
+    <!-- /ko -->
 
-<!-- ko if: apis().length === 0 -->
-<div class="list-placeholder list-group-placeholder" data-bind="if: $component.apis().length === 0">
-    No APIs to display.
+    <!-- ko if: apis().length === 0 -->
+    <div class="list-placeholder list-group-placeholder" data-bind="if: $component.apis().length === 0">
+        No APIs to display.
+    </div>
+    <!-- /ko -->
+
+    <!-- /ko -->
+
 </div>
-<!-- /ko -->
-
-<!-- /ko -->

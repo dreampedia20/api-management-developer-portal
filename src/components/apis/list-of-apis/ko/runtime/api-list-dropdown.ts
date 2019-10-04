@@ -81,7 +81,6 @@ export class ApiListDropdown {
             this.hasPrevPage(pageNumber > 0);
             this.hasNextPage(!!nextLink);
 
-
             const api = apiGroups[0].items[0];
 
             this.selectedApi(api);
