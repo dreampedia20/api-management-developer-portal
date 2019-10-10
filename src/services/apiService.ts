@@ -105,7 +105,6 @@ export class ApiService {
         }
 
         const pageOfApiTagResources = await this.mapiClient.get<PageContract<ApiTagResourceContract>>(query);
-
         const page = new Page<TagGroup<Api>>();
         const tagGroups: Bag<TagGroup<Api>> = {};
 

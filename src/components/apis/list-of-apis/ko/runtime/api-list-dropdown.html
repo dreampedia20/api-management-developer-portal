@@ -6,29 +6,35 @@
     <!-- /ko -->
 </div>
 <div class="dropdown" data-bind="visible: expanded">
-    <input type="search" class="form-control" placeholder="Search APIs" data-bind="delayedInput: pattern" />
+    <div class="search-input">
+        <input id="searchBox" class="search" role="searchbox" aria-label="Search" placeholder="Search APIs" data-bind="delayedInput: pattern" />
+        <button type="button" class="button button-primary"><i class="icon icon-magnifier"></i></button>
+    </div>
 
-    <div>
+    <div role="list">
         <!-- ko if: working -->
-        <spinner class="fit"></spinner>
+        <spinner class="fit" role="presentation"></spinner>
         <!-- /ko -->
 
         <!-- ko ifnot: working -->
-        <!-- ko if: apiGroups -->
         <!-- ko foreach: { data: apiGroups, as: 'group' } -->
         <div class="collapsible">
-            <div>
-                <button class="collapsible-trigger">
+            <div class="tag-group">
+                <!-- <button class="collapsible-trigger">
                     <i class="icon icon icon-chevron-right"></i>
-                </button>
-                <span class="tag" data-bind="text: group.tag"></span>
+                </button> -->
+                <a href="#" class="tag" data-bind="text: group.tag" role="group"></a>
             </div>
             <div class="collapsible-container">
                 <!-- ko foreach: { data: group.items, as: 'item' } -->
-                <a href="#" class="nav-link" data-bind="text: item.displayName"></a>
+                <a href="#" role="listitem" class="nav-link" data-bind="text: item.displayName"></a>
                 <!-- /ko -->
             </div>
         </div>
+        <!-- /ko -->
+
+        <!-- ko if: apiGroups().length === 0 -->
+        <p>No APIs found.</p>
         <!-- /ko -->
 
         <!-- ko if: hasPager -->
@@ -55,7 +61,6 @@
         </ul>
         <!-- /ko -->
 
-        <!-- /ko -->
         <!-- /ko -->
     </div>
 </div>

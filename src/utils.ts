@@ -178,7 +178,7 @@ export class Utils {
 
         // const result = Math.round(((bytes / divider) + Number.EPSILON) * 100) / 100;
 
-        const result =  Math.floor(bytes / divider);
+        const result = Math.floor(bytes / divider);
 
         return `${result}${suffix}`;
     }
@@ -296,11 +296,17 @@ export class Utils {
 
     public static armifyContract(contract: any): any {
         const armifiedContract = {};
-        const segments = contract.id.split("/");
 
-        armifiedContract["id"] = contract.id;
-        armifiedContract["name"] = segments[segments.length - 1];
-        contract.displayName = contract.name;
+        if (contract.id) {
+            const segments = contract.id.split("/");
+            armifiedContract["id"] = contract.id;
+            armifiedContract["name"] = segments[segments.length - 1];
+        }
+
+        if (contract.name) {
+            contract.displayName = contract.name;
+        }
+
         armifiedContract["properties"] = contract;
 
         delete contract.id;
@@ -315,7 +321,7 @@ export class Utils {
      * @param time time string
      */
     public static formatDateTime(time: string): string {
-        var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
         return new Date(time).toLocaleDateString("en-US", options);
     }
 }

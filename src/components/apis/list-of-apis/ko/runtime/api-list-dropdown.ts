@@ -25,7 +25,7 @@ export class ApiListDropdown {
     public readonly hasNextPage: ko.Observable<boolean>;
     public readonly expanded: ko.Observable<boolean>;
     public readonly selectedApi: ko.Observable<Api>;
-    
+
 
     constructor(private readonly apiService: ApiService) {
         this.working = ko.observable();
