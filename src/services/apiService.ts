@@ -18,7 +18,6 @@ import { SchemaContract } from "../contracts/schema";
 import { VersionSetContract } from "../contracts/apiVersionSet";
 import { HttpHeader } from "@paperbits/common/http/httpHeader";
 import { ChangeLogContract } from "../contracts/apiChangeLog";
-import { apiChangeLogPageSize } from "../constants";
 import { TagGroup } from "../models/tagGroup";
 import { Bag } from "@paperbits/common";
 
@@ -203,7 +202,7 @@ export class ApiService {
      */
     public async getApiChangeLog(apiId: string, skip: number): Promise<Page<ChangeLogContract>> {
         let apiResourceUri = apiId;
-        const take = apiChangeLogPageSize;
+        const take = Constants.defaultPageSize;
         apiResourceUri += `/releases?$top=${take}&$skip=${skip}`;
 
         const changelogContracts = await this.mapiClient.get<Page<ChangeLogContract>>(apiResourceUri);

@@ -4,7 +4,7 @@ import { js } from "js-beautify";
 import * as moment from "moment";
 
 export class Utils {
-    public static getResourceName(resource: string, fullId: string, resultType = "name"): string {
+    public static getResourceName(resource: string, fullId: string, resultType: string = "name"): string {
         const regexp = new RegExp(`\/${resource}\/(.*)`);
         const matches = regexp.exec(fullId);
 

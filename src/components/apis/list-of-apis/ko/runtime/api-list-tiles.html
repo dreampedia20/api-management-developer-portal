@@ -15,21 +15,19 @@
     </div>
 </div>
 
+<div class="cards">
+    <div class="cards-body">
+        <!-- ko if: working -->
+        <spinner class="fit"></spinner>
+        <!-- /ko -->
+        <!-- ko ifnot: working -->
 
-<div class="apis-tiles">
-    <!-- ko if: working -->
-    <spinner class="fit"></spinner>
-    <!-- /ko -->
-    <!-- ko ifnot: working -->
+        <!-- ko if: groupByTag -->
+        <!-- ko foreach: { data: apiGroups, as: 'group' } -->
+        <div class="tag-group">
+            <a href="#" class="tag" role="group" data-bind="text: group.tag"></a>
+        </div>
 
-    <!-- ko if: apis -->
-
-    <!-- ko if: groupByTag -->
-    <!-- ko foreach: { data: apiGroups, as: 'group' } -->
-    <div class="tag-group">
-        <a href="#" class="tag" role="group" data-bind="text: group.tag"></a>
-    </div>
-    
         <!-- ko foreach: { data: group.items, as: 'item' } -->
         <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item) }">
             <div class="card card-default">
@@ -40,18 +38,17 @@
             </div>
         </a>
         <!-- /ko -->
-    
-    <hr />
-    <!-- /ko -->
 
-    <!-- ko if: apiGroups().length === 0 -->
-    <p>No APIs found.</p>
-    <!-- /ko -->
+        <!-- /ko -->
 
-    <!-- /ko -->
+        <!-- ko if: apiGroups().length === 0 -->
+        <p>No APIs found</p>
+        <!-- /ko -->
 
-    <!-- ko ifnot: groupByTag -->
-    
+        <!-- /ko -->
+
+        <!-- ko ifnot: groupByTag -->
+
         <!-- ko foreach: { data: apis, as: 'item' } -->
         <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item) }">
             <div class="card card-default">
@@ -62,40 +59,39 @@
             </div>
         </a>
         <!-- /ko -->
-    
-
-    <!-- ko if: apis().length === 0 -->
-    <p>No APIs found.</p>
-    <!-- /ko -->
-
-    <!-- /ko -->
 
 
-    <!-- ko if: hasPager -->
-    <ul class="pagination justify-content-center">
-        <!-- ko if: hasPrevPage -->
-        <li class="page-item">
-            <a href="#" class="page-link" role="button" aria-label="Previous page"
-                data-bind="click: prevPage, enable: hasPrevPage">
-                <i class="icon icon-chevron-left"></i>
-            </a>
-        </li>
+        <!-- ko if: apis().length === 0 -->
+        <p>No APIs found</p>
         <!-- /ko -->
-        <li class="page-item">
-            <span class="page-link" data-bind="text: page"></span>
-        </li>
-        <!-- ko if: hasNextPage -->
-        <li class="page-item">
-            <a href="#" class="page-link" role="button" aria-label="Next page"
-                data-bind="click: nextPage, enable: hasNextPage">
-                <i class="icon icon-chevron-right"></i>
-            </a>
-        </li>
+
         <!-- /ko -->
-    </ul>
-    <!-- /ko -->
 
-    <!-- /ko -->
-
-    <!-- /ko -->
+        <!-- /ko -->
+    </div>
+    <div class="cards-footer">
+        <!-- ko if: hasPager -->
+        <ul class="pagination justify-content-center">
+            <!-- ko if: hasPrevPage -->
+            <li class="page-item">
+                <a href="#" class="page-link" role="button" aria-label="Previous page"
+                    data-bind="click: prevPage, enable: hasPrevPage">
+                    <i class="icon icon-chevron-left"></i>
+                </a>
+            </li>
+            <!-- /ko -->
+            <li class="page-item">
+                <span class="page-link" data-bind="text: page"></span>
+            </li>
+            <!-- ko if: hasNextPage -->
+            <li class="page-item">
+                <a href="#" class="page-link" role="button" aria-label="Next page"
+                    data-bind="click: nextPage, enable: hasNextPage">
+                    <i class="icon icon-chevron-right"></i>
+                </a>
+            </li>
+            <!-- /ko -->
+        </ul>
+        <!-- /ko -->
+    </div>
 </div>

@@ -1,0 +1,33 @@
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+
+    a,
+    a:active,
+    a:focus,
+    a:hover {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .cards-body,
+    .cards-footer {
+        flex-basis: 100%;
+    }
+
+    .card {
+        float: left;
+        overflow: hidden;
+        width: 300px;
+        height: 250px;
+    }
+}
+
+.tile {
+    margin: 1em 0;
+    overflow: hidden;
+}
+
+.tile.tile-content {
+    margin: 0;
+}
