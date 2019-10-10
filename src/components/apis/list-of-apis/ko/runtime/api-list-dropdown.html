@@ -7,7 +7,8 @@
 </div>
 <div class="dropdown" data-bind="visible: expanded">
     <div class="search-input">
-        <input id="searchBox" class="search" role="searchbox" aria-label="Search" placeholder="Search APIs" data-bind="delayedInput: pattern" />
+        <input id="searchBox" class="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
+            data-bind="delayedInput: pattern" />
         <button type="button" class="button button-primary"><i class="icon icon-magnifier"></i></button>
     </div>
 
@@ -23,11 +24,12 @@
                 <!-- <button class="collapsible-trigger">
                     <i class="icon icon icon-chevron-right"></i>
                 </button> -->
-                <a href="#" class="tag" data-bind="text: group.tag" role="group"></a>
+                <a href="#" class="tag" role="group" data-bind="text: group.tag"></a>
             </div>
             <div class="collapsible-container">
                 <!-- ko foreach: { data: group.items, as: 'item' } -->
-                <a href="#" role="listitem" class="nav-link" data-bind="text: item.displayName"></a>
+                <a href="#" role="listitem" class="nav-link text-truncate"
+                    data-bind="attr: { href: $component.getReferenceUrl(item) }, text: item.displayName"></a>
                 <!-- /ko -->
             </div>
         </div>

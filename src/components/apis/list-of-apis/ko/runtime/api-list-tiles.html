@@ -26,12 +26,12 @@
 
     <!-- ko if: groupByTag -->
     <!-- ko foreach: { data: apiGroups, as: 'group' } -->
-    <div>
-        <span class="tag" data-bind="text: group.tag"></span>
+    <div class="tag-group">
+        <a href="#" class="tag" role="group" data-bind="text: group.tag"></a>
     </div>
     <div class="apis-tiles">
         <!-- ko foreach: { data: group.items, as: 'item' } -->
-        <a href="#" data-bind="attr: { href: '/reference#?apiId=' + item.name }">
+        <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item) }">
             <div class="card card-default">
                 <h3 data-bind="text: item.displayName"></h3>
                 <div class="tile line-clamp">
@@ -48,7 +48,7 @@
     <!-- ko ifnot: groupByTag -->
     <div class="apis-tiles">
         <!-- ko foreach: { data: apis, as: 'item' } -->
-        <a href="#" data-bind="attr: { href: '/reference#?apiId=' + item.name }">
+        <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item) }">
             <div class="card card-default">
                 <h3 data-bind="text: item.displayName"></h3>
                 <div class="tile line-clamp">

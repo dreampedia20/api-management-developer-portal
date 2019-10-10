@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
 import template from "./api-list.html";
-import { Component, RuntimeComponent, Param, OnMounted } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, Param, OnMounted, OnDestroyed } from "@paperbits/common/ko/decorators";
 import { ApiService } from "../../../../../services/apiService";
 import { DefaultRouter, Route } from "@paperbits/common/routing";
 import { Api } from "../../../../../models/api";
@@ -103,19 +103,6 @@ export class ApiList {
         this.router.navigateTo("#?" + this.queryParams.toString());
     }
 
-    public selectionChanged(change, event): void {
-        if (event.originalEvent) { // user changed
-            const currentId = this.queryParams.get("apiId");
-            const selectedId = this.dropDownId();
-            if (selectedId === currentId) {
-                return;
-            }
-            this.queryParams.set("apiId", selectedId);
-            this.queryParams.delete("operationId");
-            this.router.navigateTo("#?" + this.queryParams.toString());
-        }
-    }
-
     private selectFirst(): void {
         if (this.itemStyleView() === "tiles" || this.queryParams.has("apiId")) {
             return;
@@ -129,7 +116,6 @@ export class ApiList {
             this.applySelectedApi();
         }
     }
-
 
     public prevPage(): void {
         this.page(this.page() - 1);
@@ -182,6 +168,24 @@ export class ApiList {
         }
     }
 
+    public getReferenceUrl(api: Api): string {
+        return `${Constants.apiReferencePageUrl}#?apiId=${api.name}`;
+    }
+
+    public selectionChanged(change, event): void {
+        if (event.originalEvent) { // user changed
+            const currentId = this.queryParams.get("apiId");
+            const selectedId = this.dropDownId();
+            if (selectedId === currentId) {
+                return;
+            }
+            this.queryParams.set("apiId", selectedId);
+            this.queryParams.delete("operationId");
+            this.router.navigateTo("#?" + this.queryParams.toString());
+        }
+    }
+
+    @OnDestroyed()
     public dispose(): void {
         this.router.removeRouteChangeListener(this.loadApis);
     }

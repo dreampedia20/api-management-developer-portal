@@ -37,9 +37,6 @@ export class ApiListTiles {
         this.working = ko.observable();
         this.selectedId = ko.observable();
         this.dropDownId = ko.observable();
-        this.applySelectedApi = this.applySelectedApi.bind(this);
-        this.selectFirst = this.selectFirst.bind(this);
-        this.selectionChanged = this.selectionChanged.bind(this);
         this.pattern = ko.observable();
         this.page = ko.observable(1);
         this.hasPrevPage = ko.observable();
@@ -93,19 +90,6 @@ export class ApiListTiles {
 
         this.queryParams.set("apiId", selectedId);
         this.router.navigateTo("#?" + this.queryParams.toString());
-    }
-
-    public selectionChanged(change, event): void {
-        if (event.originalEvent) { // user changed
-            const currentId = this.queryParams.get("apiId");
-            const selectedId = this.dropDownId();
-            if (selectedId === currentId) {
-                return;
-            }
-            this.queryParams.set("apiId", selectedId);
-            this.queryParams.delete("operationId");
-            this.router.navigateTo("#?" + this.queryParams.toString());
-        }
     }
 
     private selectFirst(): void {
@@ -173,7 +157,7 @@ export class ApiListTiles {
         }
     }
 
-    public dispose(): void {
-        this.router.removeRouteChangeListener(this.loadApis);
+    public getReferenceUrl(api: Api): string {
+        return `${Constants.apiReferencePageUrl}#?apiId=${api.name}`;
     }
 }

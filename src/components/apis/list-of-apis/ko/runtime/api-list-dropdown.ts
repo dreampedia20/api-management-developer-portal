@@ -46,16 +46,6 @@ export class ApiListDropdown {
         this.pattern.subscribe(this.searchApis);
     }
 
-    public prevPage(): void {
-        this.page(this.page() - 1);
-        this.searchApis();
-    }
-
-    public nextPage(): void {
-        this.page(this.page() + 1);
-        this.searchApis();
-    }
-
     /**
      * Initiates searching APIs.
      */
@@ -93,7 +83,21 @@ export class ApiListDropdown {
         }
     }
 
+    public prevPage(): void {
+        this.page(this.page() - 1);
+        this.searchApis();
+    }
+
+    public nextPage(): void {
+        this.page(this.page() + 1);
+        this.searchApis();
+    }
+
     public toggle(): void {
         this.expanded(!this.expanded());
+    }
+
+    public getReferenceUrl(api: Api): string {
+        return `${Constants.apiReferencePageUrl}#?apiId=${api.name}`;
     }
 }

@@ -21,6 +21,7 @@ export const signinUrl = "/signin";
 export const profileUrl = "/profile";
 export const homeUrl = "/";
 export const defaultPageSize = 10;
+export const apiReferencePageUrl = "/reference";
 
 /**
  * Maximum number of API change logs to show in one page
